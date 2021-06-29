@@ -1,13 +1,20 @@
 <template>
   <div class="usersComponentWrapper primary-background-color">
     <v-row class="px-6 manageusers-search-bar" justify="center" align="center">
-
+      <v-col cols="12" sm="8" md="6">
+        <!-- The search string uses the queryString event which comes from the mixin which fetches the data -->
+        <!-- Find the query String inside the search mixin -->
+        <Search
+          @queryString="queryString"
+          @filterObject="advanceSearch"
+          @clearFilter="advanceSearch"
+          :placeholder="placeholder"
+          :isAdvanceSearch="true"
+          :filterConfig="selectedSearchConfig"
+        ></Search>
+      </v-col>
     </v-row>
-    <div v-if="showErrorMessage" class="content-error-message">
-      {{ errorMessage }}
-    </div>
-  <!-- This is a Card Component -->
-  <!-- 9))) Now the content come is Information Card -->
+
     <div v-if="showErrorMessage" class="content-error-message">
       {{ errorMessage }}
     </div>
@@ -188,28 +195,44 @@
         ></v-autocomplete>
       </div>
     </div>
+  <!-- This component is used to Toogle and preview the information which it had -->
+  <!-- Userform is known as modal which is open when the bottom right button is clicked -->
+    <UserForm
+      @formOutput="formOutput"
+      @closeForm="closeForm"
+      :name="name"
+      :type="type"
+      :inputConfig="inputConfig"
+      :toggleForm="toggleForm"
+      :formData="rowToEdit"
+      :isEditMode="isEditMode"
+    ></UserForm>
+<!-- isAdminOrManagement Came from defaultCRUD Mixin -->
+    <div v-if="isAdminOrManagement" class="floating-button">
+      <v-btn @click="openInputForm()" color="primary" dark fab>
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
     </div>
-  
+  </div>
 </template>
 
 <script>
-import defaultCRUDMixin from "../mixin/defaultCRUDMixins";
-import helperMixin from "../mixin/helperMixins";
-import inputFormMixin from "../mixin/inputFormMixin";
-import searchMixin from "../mixin/searchMixin";
+// Used to fetch out the userType of the Login
+import defaultCRUDMixin from "../../mixins/defaultCRUDMixins";
+import helperMixin from "../../mixins/helperMixins";
+import inputFormMixin from "../../mixins/inputFormMixin";
+import searchMixin from "../../mixins/searchMixin";
 // Helper mixins is used to fetch out the formatted Date and some other things related to date
-import helpers from "../components/helpers";
-import { mapActions, mapGetters } from "vuex";
+import helpers from "../../components/helpers";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
-    mixins: [defaultCRUDMixin, helperMixin, inputFormMixin, searchMixin],
-
-  data(){
-    return{ 
- activeState: true,
+  name: "Users",
+  mixins: [defaultCRUDMixin, helperMixin, inputFormMixin, searchMixin],
+  data: () => ({
+    activeState: true,
     userList: [],
-    }
-  },
+  }),
   created() {
     // console.log(this.filter);
     this.getData();
@@ -392,34 +415,233 @@ export default {
   },
 };
 </script>
-<style scoped>
-.search-box {
-  width: 100%;
-  position: relative;
+
+<style lang="scss" scopped>
+.usersComponentWrapper {
+  height: 100%;
+}
+.date-container {
   display: flex;
+  justify-content: space-between;
 }
-.search-input {
-  width: 100%;
-  padding: 10px;
-  border: 4px solid #111d5e;
-  border-radius: 10px 0 0 10px;
-  border-right: none;
-  outline: none;
-  font-size: 20px;
-  color: tomato;
-  background: none;
-}
-.search-button {
-  text-align: center;
-  height: 51px;
-  width: 40px;
-  outline: none;
-  cursor: pointer;
-  border: 4px solid #111d5e;
-  border-radius: 0 10px 10px 0;
-  border-left: none;
-  background: none;
-  font-size: 20px;
-  border-left: 4px solid #111d5e;
+.manageusers-search-bar {
+  padding-top: 12px;
 }
 </style>
+
+
+<!-- <div class="usersComponentWrapper primary-background-color">
+    <v-row class="px-6 manageusers-search-bar" justify="center" align="center">
+      <v-col cols="12" sm="8" md="6">
+        <!-- The search string uses the queryString event which comes from the mixin which fetches the data -->
+  <!-- Find the query String inside the search mixin -->
+  <!-- <Search
+          @queryString="queryString"
+          @filterObject="advanceSearch"
+          @clearFilter="advanceSearch"
+          :placeholder="placeholder"
+          :isAdvanceSearch="true"
+          :filterConfig="selectedSearchConfig"
+        ></Search>
+      </v-col>
+    </v-row>
+
+    <div v-if="showErrorMessage" class="content-error-message">
+      {{ errorMessage }}
+    </div>
+  This is a Card Component
+  9))) Now the content come is Information Card
+  <div class="card-wrapper">
+  10)))  The userList is a data which came from a function getUserList() The getUserList function fetches the required data from api
+  <div v-for="user in userList" :key="user._id" class="card-element">
+  11))) Now we fetch out the data now we have to use the data in Information Card
+  expandedCard Fetches out the true function which when click toggle
+  These are the slots that 
+  <!-- <InformationCard
+          :expandCard="true"
+          :isCardDisabled="!user.record.active"
+        >
+          <template v-slot:topLeft> -->
+  <!-- <v-chip outlined x-small color="primary"> -->
+  <!-- {{ user.usr_data.designation }} -->
+  <!-- </v-chip> -->
+  <!-- </template>
+          <template v-slot:topRight>
+            {{ getFormattedDate(user.usr_data.dob, "DD/MM") }}
+          </template>
+          <template v-slot:mainContent>
+            {{ user.usr_data.name }}
+          </template>
+          <template v-slot:mainContentSubtitle>
+            {{ getMainContentSubtitle(user) }}
+          </template>
+          <template v-slot:actionButtons>
+            <template v-if="isAdminOrManagement">
+              If you are in AdminOrManagement then you will only be able to edit the buttons
+              <v-btn @click="userPasswordReset(user)" color="orange " text>
+                Reset
+              </v-btn>
+              <v-btn @click="disableUser(user)" color="error" text>
+                {{ user.record.active ? "Disable" : "Enable" }}
+              </v-btn>
+              <v-btn @click="openInputForm(true, user)" color="secondary" text>
+                Edit
+              </v-btn>
+            </template>
+            <template v-else>
+              <div
+                v-if="
+                  user.usr_data.phone_numbers &&
+                  user.usr_data.phone_numbers.length
+                "
+              >
+                {{ user.usr_data.phone_numbers.join(", ") }}
+              </div>
+            </template>
+          </template> -->
+  <!-- The slot which can be only the upper card closes here -->
+  <!-- The next slot start which is used for expanding the content came from here -->
+
+  <!-- <template v-slot:expandCardContent>
+            <v-list>
+              <v-list-item
+                v-for="(number, index) in user.usr_data.phone_numbers"
+                :key="user._id + '+' + index"
+              >
+                <v-list-item-icon>
+                  <v-icon v-if="index == 0" color="secondary">
+                    mdi-phone
+                  </v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{ number }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider inset></v-divider>
+
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="secondary"> mdi-email </v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{
+                    user.usr_data.email
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider inset></v-divider>
+
+              <template v-if="user.type == SALES_AGENT">
+                <v-list-item
+                  v-for="(partner, index) in user.usr_data
+                    .representing_partner_ids"
+                  :key="user._id + '+' + index + '+' + partner.value"
+                >
+                  <v-list-item-icon>
+                    <v-icon v-if="index == 0" color="secondary">
+                      mdi-account
+                    </v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-content>
+                    <v-list-item-title>{{ partner.text }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider inset></v-divider>
+              </template>
+
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="secondary"> mdi-map-marker </v-icon>
+                </v-list-item-icon>
+
+                <v-list-item-content>
+                  <v-list-item-title>{{
+                    user.usr_data.address
+                  }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider></v-divider>
+              <template v-if="isAdminOrManagement">
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon color="secondary"> mdi-information-outline </v-icon>
+                  </v-list-item-icon>
+
+                  <v-list-item-content>
+                    <v-list-item-title>{{
+                      user.usr_data.no_of_leaves
+                    }}</v-list-item-title>
+                    <v-list-item-subtitle> No of leaves </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-divider></v-divider>
+              </template>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <div class="date-container">
+                      <div class="doj">
+                        DOJ: {{ getFormattedDate(user.usr_data.doj) }}
+                      </div>
+                      <div class="doe">
+                        DOE:
+                        {{
+                          user.usr_data.doe
+                            ? getFormattedDate(user.usr_data.doe)
+                            : "--/--/----"
+                        }}
+                      </div>
+                    </div>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </template>
+        </InformationCard> -->
+  <!-- 12)))The Whole UserForm is now over here -->
+  <!-- </div>
+    </div> -->
+  <!-- This is the Code if it is required then it only be work -->
+
+  <!-- <div v-if="isPaginationRequired" class="paginationWrapper text-center">
+      <v-pagination
+        @input="updatedPageNo"
+        v-model="pageNo"
+        :length="Math.ceil(fetchCount / pageSize)"
+        :total-visible="paginationTotalVisible"
+        class="pagination-component"
+      ></v-pagination>
+      <div class="page-size-dropdown">
+        <v-autocomplete
+          v-model="pageSize"
+          :items="pageSizeList"
+          auto-select-first
+          solo
+          dense
+        ></v-autocomplete>
+      </div>
+    </div> -->
+  <!-- This component is used to Toogle and preview the information which it had -->
+  <!-- Userform is known as modal which is open when the bottom right button is clicked -->
+  <!-- <UserForm
+      @formOutput="formOutput"
+      @closeForm="closeForm"
+      :name="name"
+      :type="type"
+      :inputConfig="inputConfig"
+      :toggleForm="toggleForm"
+      :formData="rowToEdit"
+      :isEditMode="isEditMode"
+    ></UserForm>
+isAdminOrManagement Came from defaultCRUD Mixin 
+    <div v-if="isAdminOrManagement" class="floating-button">
+      <v-btn @click="openInputForm()" color="primary" dark fab>
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </div>
+  </div>  -->
