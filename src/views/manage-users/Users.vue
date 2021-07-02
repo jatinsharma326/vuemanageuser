@@ -117,6 +117,7 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
           </template>
+            <form @submit.prevent="submitForm" >
           <v-card>
             <v-card-title>
               <span class="text-h5">FillUp The Form</span>
@@ -124,15 +125,14 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                <form v-on:submit.prevent="formOutput">
+              
                     <v-text-field
-                      v-model="form.fullName"
+                      v-model="form.name"
                       :error-messages="nameErrors"
-                      :counter="10"
                       label="Name"
                       required
-                      @input="$v.form.fullName.$touch()"
-                      @blur="$v.form.fullName.$touch()"
+                      @input="$v.form.name.$touch()"
+                      @blur="$v.form.name.$touch()"
                     ></v-text-field>
               
                     <v-text-field
@@ -150,6 +150,7 @@
                       :error-messages="emailErrors"
                       label="E-mail"
                       required
+                      type="email"
                       @input="$v.form.email.$touch()"
                       @blur="$v.form.email.$touch()"
                     ></v-text-field>
@@ -165,13 +166,13 @@
                     </v-text-field>
                
                     <v-select
-                      v-model="form.select"
+                      v-model="form.countries"
                       :items="form.countriesItems"
                       :error-messages="selectErrors"
                       label="CountryList"
                       required
-                      @change="$v.form.select.$touch()"
-                      @blur="$v.form.select.$touch()"
+                      @change="$v.form.countries.$touch()"
+                      @blur="$v.form.countries.$touch()"
                     ></v-select>
                 
                     <v-select
@@ -186,19 +187,21 @@
                     </v-select>
                 
                     <v-text-field
-                      v-model="form.number"
+                      v-model="form.phone_number"
                       :error-messages="contactError"
                       label="ContactNo"
                       required
-                      @input="$v.form.number.$touch()"
-                      @blur="$v.form.number.$touch()"
+                      @input="$v.form.phone_number.$touch()"
+                      @blur="$v.form.phone_number.$touch()"
+                      type="number"
                     >
                     </v-text-field>
                     DOB
-                 <v-menu
-        v-model="form.menu2"
+              <v-menu
+        ref="menu"
+        v-model="form.dob"
         :close-on-content-click="false"
-        :nudge-right="40"
+        :return-value.sync="form.date"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -206,7 +209,7 @@
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="form.date"
-            label="Picker without buttons"
+            label="Picker in menu"
             prepend-icon="mdi-calendar"
             readonly
             v-bind="attrs"
@@ -215,22 +218,38 @@
         </template>
         <v-date-picker
           v-model="form.date"
-          @input="form.menu2 = false"
-        ></v-date-picker>
+          no-title
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="form.dob = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="$refs.menu.save(form.date)"
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
       </v-menu>
                     DOJ
-                 <v-menu
-        v-model="form.menu2"
-        :close-on-content-click="false"
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
-        min-width="auto"
+                     <v-dialog
+        ref="dialog"
+        v-model="form.doj"
+        :return-value.sync="form.date1"
+        persistent
+        width="290px"
       >
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
-            v-model="form.date"
-            label="Picker without buttons"
+            v-model="form.date1"
+            label="Picker in dialog"
             prepend-icon="mdi-calendar"
             readonly
             v-bind="attrs"
@@ -238,13 +257,29 @@
           ></v-text-field>
         </template>
         <v-date-picker
-          v-model="form.date"
-          @input="form.menu2 = false"
-        ></v-date-picker>
-      </v-menu>
+          v-model="form.date1"
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="form.doj = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="$refs.dialog.save(form.date1)"
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-dialog>
                     DOE
-                 <v-menu
-        v-model="form.menu2"
+                    <v-menu
+        v-model="form.doe"
         :close-on-content-click="false"
         :nudge-right="40"
         transition="scale-transition"
@@ -253,7 +288,7 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
-            v-model="form.date"
+            v-model="form.date2"
             label="Picker without buttons"
             prepend-icon="mdi-calendar"
             readonly
@@ -262,19 +297,19 @@
           ></v-text-field>
         </template>
         <v-date-picker
-          v-model="form.date"
-          @input="form.menu2 = false"
+          v-model="form.date2"
+          @input="form.doe = false"
         ></v-date-picker>
       </v-menu>
                   
-               </form>
+               
                 </v-row>
               </v-container>
               <!-- <small>*indicates required field</small> -->
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="danger" class="mr-4" type="submit" :disabled="submitStatus === 'PENDING'">
+              <v-btn  class="mr-4 submitBtn" type="submit">
                 submit
               </v-btn>
             
@@ -288,6 +323,7 @@
        
             </v-card-actions>
           </v-card>
+          </form>
         </v-dialog>
       </v-row>
     </template>
@@ -305,11 +341,13 @@ import {
   email,
   minLength,
 } from "vuelidate/lib/validators";
+// import axios from 'axios';
 import Search from "../../components/Search";
 // import Form from "../../components/Form";
+
 import { mapActions, mapMutations } from "vuex";
 import helperMixin from "../../mixin/helperMixins";
-import helpers from "../../components/helpers";
+// import helpers from "../../components/helpers";
 import searchMixin from "../../mixin/searchMixin";
 import inputFormMixin from "../../mixin/inputFormMixin";
 import defaultCRUDMixin from "../../mixin/defaultCRUDMixins";
@@ -325,18 +363,27 @@ export default {
     expandCard: { required: false, default: true },
     dialog:false,
    submitStatus: null,
+  //  modal:false,
+  //  menu:false,
+  //     date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+  disabled:'',
   form:{
-    fullName: "",
+    name: "",
     email: "",
-    // email:'',
     designation: "",
     address: "",
-    countries: null,
-    partners: null,
+    countries: [''],
+    partners: ['`'],
     dialog:false,
-     select: null,
-      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      menu2: false,
+     date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+     date1: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+     date2: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      dob: '',
+      // modal: false,
+      doj: '',
+      // modal2: false,
+      doe: '',
+    
     countriesItems: [
       "Azerbaijain",
       "Belarus",
@@ -393,29 +440,27 @@ export default {
       "Russian Tour",
       "New Concept Travel",
     ],
-    number: "",
+    phone_number: ['']
   }
   }),
   created() {
     this.getData();
-    // console.log(this.);
-    // this.setSearchConfig();
-    // console.log()
+   
   },
   computed: {
  
     selectErrors() {
       const errors = [];
-      if (!this.$v.form.select.$dirty) return errors;
-      !this.$v.form.select.required && errors.push("Item is required");
+      if (!this.$v.form.countries.$dirty) return errors;
+      !this.$v.form.countries.required && errors.push("Item is required");
       return errors;
     },
     nameErrors() {
       const errors = [];
-      if (!this.$v.form.fullName.$dirty) return errors;
-      !this.$v.form.fullName.maxLength &&
+      if (!this.$v.form.name.$dirty) return errors;
+      !this.$v.form.name.maxLength &&
         errors.push("Name must be at most 10 characters long");
-      !this.$v.form.fullName.required && errors.push("Name is required.");
+      !this.$v.form.name.required && errors.push("Name is required.");
       return errors;
     },
     emailErrors() {
@@ -441,7 +486,7 @@ export default {
     addressErrors() {
       const errors = [];
       if (!this.$v.form.address.$dirty) return errors;
-      !this.$v.form.address.minLength && errors.push("Name has minimum length of 5");
+      !this.$v.form.address.minLength && errors.push("Address has minimum length of 5");
       !this.$v.form.address.required && errors.push("This field is required");
       return errors;
     },
@@ -454,9 +499,8 @@ export default {
     },
     contactError() {
       const errors = [];
-      if (!this.$v.form.number.$dirty) return errors;
-      !this.$v.form.number.required && errors.push("Name has minimum length of 5");
-      !this.$v.form.number.number && errors.push("Enter a valid Contact");
+      if (!this.$v.form.phone_number.$dirty) return errors;
+      !this.$v.form.phone_number.required && errors.push("Contact has minimum length of 10");
       return errors;
     },
   },
@@ -464,18 +508,51 @@ export default {
   methods: {
     ...mapActions("ManageUser", ["getUserList", "addUser"]),
     ...mapMutations(["openLoaderDialog", "closeLoaderDialog"]),
-    submit() {
+  
+    submitForm() {
+
       console.log('submit!')
       this.$v.$touch();
-      if(this.$v.$invalid){
-        this.submitStatus = 'ERROR'
+    let formData = JSON.parse(JSON.stringify(this.form));
+    formData.type = this.type;
+    this.openLoaderDialog();
+    this.addUser(formData).then(res =>{
+      if(res.ok){
+        console.log(res)
       }else{
-        this.submitStattus = 'PENDING'
-        setTimeout(() => {
-          this.submitStatus = 'OK'
-        }, 500);
+        console.log("err")
       }
-    },
+    })
+      // if(this.$v.$invalid){
+      //   this.submitStatus = 'ERROR'
+      // }else{
+      //       let data = this.form;
+      //     let formData = JSON.parse(JSON.stringify(data)); //When the data we send to the server it sends in a form of string but when receiving side we take as an object
+      // formData.type = this.type;
+      //   this.openLoaderDialog();
+      
+      //   this.addUser(formData).then((datas) => {
+      //     this.closeLoaderDialog();
+      //     if (datas.ok) {
+      //       console.log("User Added Successfully")
+
+      //       this.getData();
+      //       this.closeForm();
+      //     } else {
+      //       console.log("failed to store");
+      //     }
+      //   }).catch(err => console.log(err));
+      //Absolutely working
+  //     let formData = JSON.stringify(this.form);
+  //    axios.post('https://jsonplaceholder.typicode.com/posts',formData,{
+  //      headers: {
+  //   'Content-type': 'application/json; charset=UTF-8',
+  // },
+  //    })
+  //    .then(res => console.log(res))
+  //    .catch(err => console.log(err))
+      },
+    
 
     clear() {
       this.$v.$reset();
@@ -516,32 +593,32 @@ export default {
     formOutput(data) {
       var formData = JSON.parse(JSON.stringify(data)); //When the data we send to the server it sends in a form of string but when receiving side we take as an object
       formData.type = this.type;
-      formData.dob = helpers.getISODate(formData.dob);
-      formData.doj = helpers.getISODate(formData.doj);
-      if (formData.doe) {
-        formData.doe = helpers.getISODate(formData.doe);
-      }
+      // formData.dob = helpers.getISODate(formData.dob);
+      // formData.doj = helpers.getISODate(formData.doj);
+      // if (formData.doe) {
+      //   formData.doe = helpers.getISODate(formData.doe);
+      // }
 
-      if (formData.countries) {
-        formData.countries = formData.countries.filter(
-          (e) => !!this.activeCountriesList.find((f) => f == e)
-        );
-      }
-      formData.phone_numbers = data.phone_numbers.map((data) => data.input);
-      if (formData.representing_partner_ids) {
-        formData.representing_partner_ids = formData.representing_partner_ids.filter(
-          (id) => {
-            for (let partner of this.partners) {
-              if (partner.value == id) {
-                return true;
-              }
-            }
-          }
-        );
-      }
+      // if (formData.countries) {
+      //   formData.countries = formData.countries.filter(
+      //     (e) => !!this.activeCountriesList.find((f) => f == e)
+      //   );
+      // }
+      // formData.phone_numbers = data.phone_numbers.map((data) => data.input);
+      // if (formData.representing_partner_ids) {
+      //   formData.representing_partner_ids = formData.representing_partner_ids.filter(
+      //     (id) => {
+      //       for (let partner of this.partners) {
+      //         if (partner.value == id) {
+      //           return true;
+      //         }
+      //       }
+      //     }
+      //   );
+      // }
 
       this.openLoaderDialog();
-      if (!this.isEditMode) {
+      
         this.addUser(formData).then((data) => {
           this.closeLoaderDialog();
           if (data.ok) {
@@ -553,19 +630,7 @@ export default {
             this.openSnackbar({ text: data.message });
           }
         });
-      } else {
-        this.editUser(formData).then((data) => {
-          this.closeLoaderDialog();
-          if (data.ok) {
-            this.openSnackbar({ text: "Edited User Sucessfuly" });
-
-            this.getData();
-            this.closeForm();
-          } else {
-            this.openSnackbar({ text: data.message });
-          }
-        });
-      }
+      
     },
     getEditRowObject(data) {
       return {
@@ -588,24 +653,24 @@ export default {
     
   },
   props: {
-    name: { required: true, type: String },
+    // name: { required: true, type: String },
     type: { required: true, type: String },
     placeholder: { required: true, type: String },
     activeCountriesList: { required: false, type: Array },
   },
   validations: {
    form:{ email: { required, email },
-    select: { required },
+    countries: { required },
    
-    fullName: { required, maxLength: maxLength(40) },
+    name: { required, maxLength: maxLength(40) },
     designation: {
       required,
       maxLength: maxLength(40),
       minLength: minLength(2),
     },
-    address: { required, maxLength: maxLength(40) },
+    address: { required, maxLength: maxLength(40) ,minLength:minLength(5)},
     partners: { required },
-    number: { required },
+    phone_number: { required,minLength:minLength(10) },
   },
   }
 };
@@ -637,6 +702,9 @@ export default {
   color: white;
   font-size: 25px;
   box-sizing: border-box;
+}
+.submitBtn{
+  background:red;
 }
 // .usersComponentWrapper {
 //   height: 100%;

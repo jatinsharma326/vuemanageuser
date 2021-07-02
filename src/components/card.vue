@@ -86,9 +86,7 @@
                 show:false
             }
         },
-		created(){
-			console.log("card was created",this.show);
-		},
+	
         props:{
             expandCard: {
 				required: false,

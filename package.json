@@ -16,6 +16,7 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
     "gsap": "^3.7.0",
+    "json-server": "^0.16.3",
     "jsonwebtoken": "^8.5.1",
     "long-timeout": "^0.1.1",
     "moment-timezone": "^0.5.33",
