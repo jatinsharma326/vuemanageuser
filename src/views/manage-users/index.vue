@@ -11,7 +11,6 @@
         <Users v-bind="{ ...item.props }" />
       </v-tab-item>
     </v-tabs-items>
-    
   </div>
 </template>
 
@@ -73,8 +72,8 @@ export default {
                 },
               },
               {
-                name: "Designation",
-                type: String,
+                name: "Designation*",
+                type: "String",
                 key: "designation",
                 width: "half",
                 validations: {
@@ -83,53 +82,64 @@ export default {
                 },
               },
               {
-                name: "Email",
-                type: String,
+                name: "Email*",
+                type: "String",
                 key: "email",
-                width: "half",
+                width: "full",
                 validations: {
                   required,
                   email,
+                  minLength: minLength(4),
                 },
               },
               {
-                name: "Address",
-                type: String,
+                name: "Address*",
+                type: "String",
                 key: "address",
-                width: "half",
+                width: "full",
                 validations: {
                   required,
-                  minLength: minLength(1),
+                  minLength: minLength(10),
                 },
               },
               {
-                name: "Countries",
+                name: "Countries*",
                 type: "Dropdown",
                 key: "countries",
                 width: "half",
+                multi: true,
+                isListInStore: false,
+                listItems: activeCountriesList,
                 validations: {
                   required,
-                  minLength: minLength(1),
                 },
               },
+            {
+								name: "Partners*",
+									type: "Dropdown",
+									key: "representing_partner_ids",
+									width: "half",
+									multi: true,
+									isListInStore: true,
+									listVariable: "partners",
+									validations: {
+										required,
+									},
+								},
               {
-                name: "Partners",
-                type: "Dropdown",
-                key: "partners",
+                name: "Contact Numbers*",
+                type: "MultiInput",
+                key: "phone_numbers",
                 width: "half",
                 validations: {
                   required,
                   minLength: minLength(1),
-                },
-              },
-              {
-                name: "PhoneNumber",
-                type: "Number",
-                key: "phonenumber",
-                width: "half",
-                validations: {
-                  required,
-                  minLength: minLength(1),
+                  $each: {
+                    input: {
+                      required,
+                      minLength: minLength(8),
+                    },
+                  },
                 },
               },
               {
@@ -167,7 +177,7 @@ export default {
             name: "Remote Sales Team",
             type: "remote_sales_agent",
             placeholder: "Search Remote Sales Team",
-             inputForm: [
+            inputForm: [
               {
                 name: "Full Name*",
                 type: "String",
@@ -175,12 +185,12 @@ export default {
                 width: "half",
                 validations: {
                   required,
-                  minLength: minLength(1),
+                  minLength: minLength(4),
                 },
               },
               {
-                name: "Designation",
-                type: String,
+                name: "Designation*",
+                type: "String",
                 key: "designation",
                 width: "half",
                 validations: {
@@ -189,43 +199,52 @@ export default {
                 },
               },
               {
-                name: "Email",
-                type: String,
+                name: "Email*",
+                type: "String",
                 key: "email",
                 width: "half",
                 validations: {
                   required,
                   email,
+                  minLength: minLength(4),
                 },
               },
               {
-                name: "Address",
-                type: String,
+                name: "Address*",
+                type: "String",
                 key: "address",
                 width: "half",
                 validations: {
                   required,
-                  minLength: minLength(1),
+                  minLength: minLength(10),
                 },
               },
               {
-                name: "zone",
+                name: "Zone*",
                 type: "Dropdown",
                 key: "zone",
                 width: "half",
+                multi: false,
+                isListInStore: true,
+                listVariable: "zone",
                 validations: {
                   required,
-                  minLength: minLength(1),
                 },
               },
               {
-                name: "PhoneNumber",
-                type: "Number",
-                key: "phonenumber",
+                name: "Contact Numbers*",
+                type: "MultiInput",
+                key: "phone_numbers",
                 width: "half",
                 validations: {
                   required,
                   minLength: minLength(1),
+                  $each: {
+                    input: {
+                      required,
+                      minLength: minLength(8),
+                    },
+                  },
                 },
               },
               {
@@ -263,7 +282,7 @@ export default {
             name: "Management",
             type: "management",
             placeholder: "Search Management Team",
-             inputForm: [
+            inputForm: [
               {
                 name: "Full Name*",
                 type: "String",
@@ -271,12 +290,12 @@ export default {
                 width: "half",
                 validations: {
                   required,
-                  minLength: minLength(1),
+                  minLength: minLength(4),
                 },
               },
               {
-                name: "Designation",
-                type: String,
+                name: "Designation*",
+                type: "String",
                 key: "designation",
                 width: "half",
                 validations: {
@@ -285,33 +304,40 @@ export default {
                 },
               },
               {
-                name: "Email",
-                type: String,
+                name: "Email*",
+                type: "String",
                 key: "email",
                 width: "half",
                 validations: {
                   required,
                   email,
+                  minLength: minLength(4),
                 },
               },
               {
-                name: "Address",
-                type: String,
+                name: "Address*",
+                type: "String",
                 key: "address",
                 width: "half",
                 validations: {
                   required,
-                  minLength: minLength(1),
+                  minLength: minLength(10),
                 },
               },
               {
-                name: "PhoneNumber",
-                type: "Number",
-                key: "phonenumber",
+                name: "Contact Numbers*",
+                type: "MultiInput",
+                key: "phone_numbers",
                 width: "half",
                 validations: {
                   required,
                   minLength: minLength(1),
+                  $each: {
+                    input: {
+                      required,
+                      minLength: minLength(8),
+                    },
+                  },
                 },
               },
               {

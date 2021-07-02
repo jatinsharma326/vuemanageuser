@@ -3,7 +3,7 @@ import Vuex from "vuex";
 
 import axios from "axios";
 import constants from "../api/index";
-// import ManageAgents from "../views/manage-agents/store";
+import ManageAgents from "../views/manage-agents/store";
 import ManageUser from "../views/manage-users/store";
 
 Vue.use(Vuex);
@@ -75,6 +75,7 @@ const initialState = () => ({
 export default new Vuex.Store({
   modules: {
     ManageUser,
+    ManageAgents,
   },
 
   state: initialState(),

@@ -22,9 +22,7 @@
         class="overflow-y-auto"
         max-height="600"
       >
-        <v-container style="height: 100px;">
-
-        </v-container>
+        <v-container style="height: 100px;"> </v-container>
       </v-sheet>
     </v-card>
     <!-- <v-app-bar class="toolbarWrapper" color="primary" app fixed>
@@ -78,7 +76,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-// import helpers from "./components/helpers";
+import helpers from "./components/helpers";
 export default {
   name: "App",
 
@@ -87,7 +85,7 @@ export default {
     navigationToggle: false,
     localSnackbarState: false,
     currentRoute: "",
-	value:"",
+    value: "",
     title: "TITLE",
     // settingsRoute: {
     // 	title: "Settings",
@@ -110,26 +108,27 @@ export default {
 
     // ],
   }),
-  // 	async created() {
-  // 		if (helpers.getCurrentRoute() != "settings") {
-  // 			this.currentRoute =
-  // 				this.routeItems.find((e) => e.route == "/" + helpers.getCurrentRoute()).title || "Dashboard";
-  // 		} else {
-  // 			this.currentRoute = this.settingsRoute.title;
-  // 		}
-  // 		// this.title = this.title.split("/")[0] + " / " + this.currentRoute;
+  async created() {
+    if (helpers.getCurrentRoute() != "settings") {
+      // this.currentRoute =
+      //   this.routeItems.find((e) => e.route == "/" + helpers.getCurrentRoute())
+      //     .title || "Dashboard";
+    } else {
+      this.currentRoute = this.settingsRoute.title;
+    }
+    // this.title = this.title.split("/")[0] + " / " + this.currentRoute;
 
-  //   //Means what the title it becomes the current route
-  // 		this.title = this.currentRoute;
-  // 		let promises = [];
-  // 		promises.push(this.getCountries());
-  // 		promises.push(this.getPartnerList());
-  // 		promises.push(this.getZones());
-  // 		promises.push(this.getBusinessTypes());
-  // 		promises.push(this.getAllCurrencies());
-  // 		promises.push(this.getStatesList());
-  // 		await Promise.all(promises);
-  // 	},
+    //Means what the title it becomes the current route
+    this.title = this.currentRoute;
+    let promises = [];
+    promises.push(this.getCountries());
+    promises.push(this.getPartnerList());
+    promises.push(this.getZones());
+    promises.push(this.getBusinessTypes());
+    promises.push(this.getAllCurrencies());
+    // promises.push(this.getStatesList());
+    await Promise.all(promises);
+  },
   methods: {
     ...mapActions([
       "logout",
@@ -139,7 +138,7 @@ export default {
       "getBusinessTypes",
       "getAllCurrencies",
     ]),
-    ...mapActions("ManageAgents", ["getStatesList"]),
+    // ...mapActions("ManageAgents", ["getStatesList"]),
     ...mapMutations([
       "openLoaderDialog",
       "closeLoaderDialog",
@@ -233,7 +232,7 @@ export default {
 .toolbarWrapper {
   background: linear-gradient(
     90deg,
-    rgba(55, 182, 201, 1) 0%,
+    rgb(201, 72, 55) 0%,
     rgba(166, 206, 68, 1) 100%
   );
 }

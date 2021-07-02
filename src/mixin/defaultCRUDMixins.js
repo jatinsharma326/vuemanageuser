@@ -1,12 +1,12 @@
 // 8))) In the default CRUD mixin this helps to check out the userType if it is ADMIN or Management
-import InformationCard from "../components/InformationCard.vue";
-import ViewMoreModal from "../components/ViewMoreModal";
+import InformationCard from "../components/card.vue";
+// import ViewMoreModal from "../components/ViewMoreModal";
 import {  mapGetters, mapMutations } from "vuex";
 
 const defaultCRUDMixins = {
 	components: {
 		InformationCard,
-		ViewMoreModal,
+		
 	},
 	data: () => ({
 		viewMoreModal: false,

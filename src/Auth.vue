@@ -35,6 +35,7 @@
 import { required, email } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
 // import packageJson from "../package.json";
+import { gsap } from "gsap";
 
 export default {
   name: "Auth",
@@ -54,6 +55,16 @@ export default {
     ...mapActions([
       "login", //also supports payload `this.nameOfAction(amount)`
     ]),
+   letsAnimate(){
+     gsap.from(".img-small",{
+       x:200,
+       duration:1
+     })
+     gsap.to(".img-small",{
+       x:0,
+       duration:1
+     })
+   },
     // async loginUser() {
     // 			this.showError = false
     // 			this.$v.$touch()
@@ -106,6 +117,7 @@ export default {
 				this.loaderDialog = false
 			}
 		},
+    
   },
   validations: {
     email: {
@@ -190,32 +202,10 @@ button:hover{
   box-shadow:0 10px 20px rgba(0,0,0,0.2)
 }
 .img-small{
-  height:100px;
-  width:100px;
+  height:200px;
+  width:200px;
 }
-/* button::after{
-  content:"";
-  display:inline-block;
-  height:100%;
-  width:100%;
-  border-radius:100px;
-  position:absolute;
-  top:0;
-  left:0;
-  z-index:-1;
-  transition:all .4s;
 
-}
-@keyframes moveInBottom{
- 0%{
-   opacity: 0;
-   transform:translateY(30px);
- }
- 100%{
-   opacity:1;
-   transform:translateY(0px);
- }
-} */
 form {
   background-color: #ffffff;
   display: flex;
@@ -262,30 +252,7 @@ input {
 .container .right-panel-active .sign-in-container {
   transform: translateX(100%);
 }
-/* .sign-up-container{
-    left:0;
-    width:50%;
-    opacity:0;
-    z-index:1;
-  }
-  .container .right-panel-active .sign-up-container{
-    transform:translateX(100%);
-    opacity:1;
-    z-index:5;
-    animation:show 0.6s;
-  } */
 
-/* @keyframes show{
-  0%,49.99%{
-    opacity:0;
-    z-index:1;
-  }
-  50%,100%{
-    opacity:1;
-    z-index:5;
-     
-  }
-} */
 overlay-container {
   position: absolute;
   top: 0;
@@ -316,7 +283,7 @@ overlay-container {
 .overlay {
   background: #e7e95f;
   background: -webkit-linear-gradient(to right, #edff9b, #848f21);
-  background: linear-gradient(to right, #7fd7fa, #0796cf);
+  background: linear-gradient(to right, #e8f07b, #cde738);
   background-repeat: no-repeat;
   background-size: cover;
   color: #ffffff;
@@ -376,5 +343,13 @@ overlay-container {
   margin: 0 5px;
   height: 40px;
   width: 40px;
+}
+#container{
+  background-color:blanchedalmond;
+}
+</style>
+<style>
+html{ 
+  background-color:bisque;
 }
 </style>
